@@ -47,7 +47,23 @@ main{padding:30px 0 70px}section{padding:46px 0;border-bottom:1px solid var(--li
 <div class="help" id="englishHelp"><b>Try:</b> From my perspective… · It depends on… · I've never really thought about that. · Something similar happened to me. · What makes you say that? · Would you do it differently now?</div></section>
 <section><div class="tag">4 · What would you do?</div><h2>A dilemma.</h2><div class="stage"><div class="prompt" id="dilemmaPrompt">You're offered an exciting new opportunity, but accepting it would completely change your routine. How do you decide?</div><div class="controls"><button class="btn" onclick="setText('dilemmaPrompt',dilemmas)">Another dilemma</button></div></div></section>
 <section><div class="tag">5 · Tell us the story</div><h2>Make it personal.</h2><div class="stage"><div class="tag">Tell us about a time when…</div><div class="prompt" id="storyPrompt">…you realized something in your life needed to change.</div><div class="controls"><button class="btn" onclick="setText('storyPrompt',stories)">Another story</button><button class="btn" onclick="toggle('storyHelp')">Story support</button></div><div id="storyHelp" style="display:none;margin-top:14px">Set the scene → What happened? → What did you do? → How did it end? → Looking back, what do you think now?</div></div></section>
-<section id="game"><div class="tag">6 · Baamboozle-style</div><h2>🎮 Game Time</h2><p class="lead">Two teams. Choose a number. Reveal the challenge. Speak to win the points.</p><div class="card"><div class="score">TEAM A: <span id="a">0</span> pts &nbsp; TEAM B: <span id="b">0</span> pts <button class="pill" onclick="resetGame()">New Game</button></div></div><div class="board" id="board"></div><div class="stage" id="challenge" style="display:none"><div class="tag" id="cat"></div><div class="prompt" id="q"></div><div class="controls"><button class="btn" onclick="award('A')">Team A gets points</button><button class="btn" onclick="award('B')">Team B gets points</button></div></div></section>
+
+<section id="game">
+  <div class="tag">6 · Conversation Game</div>
+  <h2>🎲 Pick a number. Start talking.</h2>
+  <p class="lead">Choose any card. There are no right answers and no points — just a new way into the conversation. After the answer, somebody else at the table must ask one follow-up question.</p>
+  <div class="board" id="simpleBoard"></div>
+  <div class="stage" id="simpleChallenge" style="display:none">
+    <div class="tag">Life Lately · Conversation Card</div>
+    <div class="prompt" id="simpleQuestion"></div>
+    <div class="controls">
+      <button class="btn" onclick="nextConversationCard()">Another question</button>
+      <button class="btn" onclick="document.getElementById('simpleFollow').textContent=pick(simpleFollowups)">Give us a follow-up</button>
+      <button class="btn" onclick="resetConversationCards()">Reset cards</button>
+    </div>
+    <div id="simpleFollow" style="margin-top:14px;font-weight:900"></div>
+  </div>
+</section>
 <section><div class="tag">7 · One last question</div><h2>Before we leave…</h2><div class="stage"><div class="prompt" id="lastPrompt">What would you like to have more time for right now?</div><div class="controls"><button class="btn" onclick="setText('lastPrompt',lastqs)">One more</button><a class="btn" href="index.html">Back to the table</a></div></div></section>
 </main><footer>The Conversation Table · Gathering 02</footer>
 <script>
@@ -60,22 +76,50 @@ dilemmas=["You're offered an exciting new opportunity, but accepting it would co
 stories=["…you realized something in your life needed to change.","…you tried something for the first time.","…you made a decision that turned out better than expected.","…you had to leave your comfort zone.","…someone gave you advice you still remember."],
 lastqs=["What would you like to have more time for right now?","What are you better at today than you were five years ago?","What's one thing you're genuinely looking forward to?","What did somebody say today that you'd like to keep thinking about?"];
 const followups=["Why?","Can you give us an example?","Has that always been true for you?","Would you make the same choice again?","Does anyone here see it differently?","What changed afterwards?"];
-const gamecards=[
-["RIGHT NOW","Describe this stage of your life in three words — and explain them.",10],
-["CHANGE","What's one change you've made that improved your daily life?",20],
-["WORK & LIFE","Would you choose more money or more free time right now?",20],
-["STORY","Tell us about a recent first-time experience.",30],
-["PRIORITIES","What's something that matters less to you now than it used to?",30],
-["LOOKING AHEAD","What's something you're genuinely excited about?",10],
-["CHALLENGE","Speak for 45 seconds about something you're learning.",30],
-["DEVIL'S ADVOCATE","Argue that people should change careers at least once.",40],
-["DECISION","What's a decision you're glad you didn't postpone?",30],
-["TIME","If you suddenly had one extra free day every week, what would you do with it?",20],
-["ADVICE","What's a piece of advice you understand better now than when you first heard it?",30],
-["BIG QUESTION","Do people become more themselves as they get older?",40]
-];let sa=0,sb=0,current=null,used=new Set();
-function build(){let b=document.getElementById('board');b.innerHTML='';gamecards.forEach((c,i)=>{let x=document.createElement('button');x.className='tile';x.textContent=i+1;x.onclick=()=>openCard(i);b.appendChild(x)})}
-function openCard(i){if(used.has(i))return;used.add(i);current=gamecards[i];let buttons=document.querySelectorAll('.tile');buttons[i].disabled=true;buttons[i].textContent='✓';buttons[i].style.opacity='.35';document.getElementById('cat').textContent=current[0]+' · '+current[2]+' POINTS';document.getElementById('q').textContent=current[1];document.getElementById('challenge').style.display='block'}
-function award(t){if(!current)return;if(t==='A')sa+=current[2];else sb+=current[2];document.getElementById('a').textContent=sa;document.getElementById('b').textContent=sb;document.getElementById('challenge').style.display='none';current=null}
-function resetGame(){sa=sb=0;current=null;used.clear();document.getElementById('a').textContent=0;document.getElementById('b').textContent=0;document.getElementById('challenge').style.display='none';build()}build();
+
+
+const simpleQuestions=['What is taking up most of your time these days?', 'What is something new in your life lately?', 'What are you looking forward to right now?', 'What is something you are trying to get better at?', 'What do you make more time for now than you did five years ago?', 'What is one small thing that made you happy this week?', 'Have you changed your mind about anything recently?', 'What is something you would like to say no to more often?', 'What would you do with one completely free day?', 'What is a skill you would love to learn?', 'What part of your routine works really well for you?', 'What is something you are proud of from the last year?', 'What kind of situations take you out of your comfort zone?', 'What advice makes more sense to you now than it did when you were younger?', 'What is one decision you are glad you made?', 'What would you like to have more time for?'];
+const simpleFollowups=[
+"Why do you think that?",
+"Can you give us an example?",
+"Has that always been true for you?",
+"Does anyone at the table have a different answer?",
+"What happened next?",
+"Would you make the same choice today?",
+"How does that compare with your country or culture?",
+"What makes you say that?"
+];
+let simpleUsed=[];
+function showConversationCard(i){
+  simpleUsed.push(i);
+  document.getElementById("simpleQuestion").textContent=simpleQuestions[i];
+  document.getElementById("simpleChallenge").style.display="block";
+  document.getElementById("simpleFollow").textContent="";
+  const cards=document.querySelectorAll("#simpleBoard .tile");
+  if(cards[i]){cards[i].disabled=true;cards[i].textContent="✓";cards[i].style.opacity=".38";}
+}
+function buildConversationBoard(){
+  const board=document.getElementById("simpleBoard");
+  board.innerHTML="";
+  simpleQuestions.forEach((q,i)=>{
+    const b=document.createElement("button");
+    b.className="tile";
+    b.textContent=i+1;
+    b.addEventListener("click",()=>showConversationCard(i));
+    board.appendChild(b);
+  });
+}
+function nextConversationCard(){
+  const remaining=simpleQuestions.map((_,i)=>i).filter(i=>!simpleUsed.includes(i));
+  if(!remaining.length){resetConversationCards();return;}
+  showConversationCard(pick(remaining));
+}
+function resetConversationCards(){
+  simpleUsed=[];
+  document.getElementById("simpleChallenge").style.display="none";
+  document.getElementById("simpleFollow").textContent="";
+  buildConversationBoard();
+}
+buildConversationBoard();
+
 </script></body></html>

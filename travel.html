@@ -36,7 +36,23 @@ main{padding:30px 0 70px}section{padding:46px 0;border-bottom:1px solid var(--li
 <div class="help" id="englishHelp"><b>Try:</b> From my perspective… · It depends on… · I've never really thought about that. · Something similar happened to me. · What makes you say that? · Would you do it differently now?</div></section>
 <section><div class="tag">4 · What would you do?</div><h2>A dilemma.</h2><div class="stage"><div class="prompt" id="dilemmaPrompt">Your flight is cancelled and the next one leaves tomorrow. The airline offers a hotel, but you'll miss the first day of your trip. How do you react?</div><div class="controls"><button class="btn" onclick="setText('dilemmaPrompt',dilemmas)">Another dilemma</button></div></div></section>
 <section><div class="tag">5 · Tell us the story</div><h2>Make it personal.</h2><div class="stage"><div class="tag">Tell us about a time when…</div><div class="prompt" id="storyPrompt">…a trip didn't go according to plan.</div><div class="controls"><button class="btn" onclick="setText('storyPrompt',stories)">Another story</button><button class="btn" onclick="toggle('storyHelp')">Story support</button></div><div id="storyHelp" style="display:none;margin-top:14px">Set the scene → What happened? → What did you do? → How did it end? → Looking back, what do you think now?</div></div></section>
-<section id="game"><div class="tag">6 · Baamboozle-style</div><h2>🎮 Game Time</h2><p class="lead">Two teams. Choose a number. Reveal the challenge. Speak to win the points.</p><div class="card"><div class="score">TEAM A: <span id="a">0</span> pts &nbsp; TEAM B: <span id="b">0</span> pts <button class="pill" onclick="resetGame()">New Game</button></div></div><div class="board" id="board"></div><div class="stage" id="challenge" style="display:none"><div class="tag" id="cat"></div><div class="prompt" id="q"></div><div class="controls"><button class="btn" onclick="award('A')">Team A gets points</button><button class="btn" onclick="award('B')">Team B gets points</button></div></div></section>
+
+<section id="game">
+  <div class="tag">6 · Conversation Game</div>
+  <h2>🎲 Pick a number. Start talking.</h2>
+  <p class="lead">Choose any card. There are no right answers and no points — just a new way into the conversation. After the answer, somebody else at the table must ask one follow-up question.</p>
+  <div class="board" id="simpleBoard"></div>
+  <div class="stage" id="simpleChallenge" style="display:none">
+    <div class="tag">Travel Stories · Conversation Card</div>
+    <div class="prompt" id="simpleQuestion"></div>
+    <div class="controls">
+      <button class="btn" onclick="nextConversationCard()">Another question</button>
+      <button class="btn" onclick="document.getElementById('simpleFollow').textContent=pick(simpleFollowups)">Give us a follow-up</button>
+      <button class="btn" onclick="resetConversationCards()">Reset cards</button>
+    </div>
+    <div id="simpleFollow" style="margin-top:14px;font-weight:900"></div>
+  </div>
+</section>
 <section><div class="tag">7 · One last question</div><h2>Before we leave…</h2><div class="stage"><div class="prompt" id="lastPrompt">What kind of traveller would you like to become?</div><div class="controls"><button class="btn" onclick="setText('lastPrompt',lastqs)">One more</button><a class="btn" href="index.html">Back to the table</a></div></div></section>
 </main><footer>The Conversation Table · Gathering 01</footer>
 <script>
@@ -46,9 +62,50 @@ function setText(id,arr){document.getElementById(id).textContent=pick(arr)}
 
 const talks=['Are you the same traveller today that you were ten years ago?', 'What matters more to you now: comfort, adventure, food, culture or company?', "What's something tourists often get wrong?", "Have you ever visited somewhere that didn't live up to the hype?", "What's the best travel advice you've ever received?", 'Would you rather return to a place you love or always visit somewhere new?'],dilemmas=["Your flight is cancelled and the next one leaves tomorrow. The airline offers a hotel, but you'll miss the first day of your trip. How do you react?", "You're travelling with someone who wants to plan every minute. You prefer spontaneity. How do you negotiate the trip?", 'You discover an amazing place that is becoming overcrowded because of social media. Would you post about it?'],stories=["…a trip didn't go according to plan.", '…a stranger helped you while travelling.', '…you felt completely out of your comfort zone.', "…you discovered a place you hadn't expected to love."],lastqs=['What kind of traveller would you like to become?', "What's one place that changed the way you see something?", 'What matters more: the destination or who you share it with?'];
 const followups=["Why?","Can you give us an example?","Has that always been true for you?","Would you make the same choice again?","Does anyone here see it differently?","What changed afterwards?"];
-const gamecards=[('TRAVEL TYPE', 'Describe your travel personality in three words and defend them.', 10), ('WOULD YOU RATHER?', 'Luxury hotel for 3 days or simple accommodation for 10 days?', 20), ('STORY', 'Tell us about a travel mistake.', 30), ('DEBATE', 'Tourist attractions are usually overrated. Agree or disagree?', 20), ('PACKING', 'Name five things you would never travel without — explain two.', 10), ('CULTURE', "What's one local custom travellers should respect?", 20), ('CHALLENGE', 'Speak for 45 seconds about your ideal trip without stopping.', 30), ("DEVIL'S ADVOCATE", 'Argue that travelling is overrated.', 40), ('MEMORY', 'Describe a place without naming it. Let the others guess.', 30), ('TRAVEL MATE', 'What behaviour would make someone a terrible travel companion?', 20), ('FOOD', 'Would you try absolutely any local food when travelling?', 20), ('BIG QUESTION', 'Does travelling really make people more open-minded?', 40)];let sa=0,sb=0,current=null,used=new Set();
-function build(){let b=document.getElementById('board');b.innerHTML='';gamecards.forEach((c,i)=>{let x=document.createElement('button');x.className='tile';x.textContent=i+1;x.onclick=()=>openCard(i);b.appendChild(x)})}
-function openCard(i){if(used.has(i))return;used.add(i);current=gamecards[i];let buttons=document.querySelectorAll('.tile');buttons[i].disabled=true;buttons[i].textContent='✓';buttons[i].style.opacity='.35';document.getElementById('cat').textContent=current[0]+' · '+current[2]+' POINTS';document.getElementById('q').textContent=current[1];document.getElementById('challenge').style.display='block'}
-function award(t){if(!current)return;if(t==='A')sa+=current[2];else sb+=current[2];document.getElementById('a').textContent=sa;document.getElementById('b').textContent=sb;document.getElementById('challenge').style.display='none';current=null}
-function resetGame(){sa=sb=0;current=null;used.clear();document.getElementById('a').textContent=0;document.getElementById('b').textContent=0;document.getElementById('challenge').style.display='none';build()}build();
+
+
+const simpleQuestions=['What is the best trip you have ever taken, and what made it special?', 'Are you a planner or a spontaneous traveller?', 'What is one place you would happily visit again?', 'What is something you always take with you when you travel?', 'What makes someone a great travel companion?', 'Do you prefer cities, beaches, mountains or the countryside? Why?', 'What is the most memorable food you have tried while travelling?', 'Have you ever had a travel plan go completely wrong?', 'What is one place in your country that visitors should not miss?', 'Would you rather travel more often for shorter trips or less often for longer trips?', 'What do you enjoy doing that is not usually in a tourist guide?', 'Do you think social media has changed the way people travel?', 'What is one travel habit you have changed over the years?', 'Would you travel somewhere without speaking the local language?', 'What is more important on a trip: the destination or the people you are with?', 'If someone gave you a plane ticket for tomorrow, where would you go?'];
+const simpleFollowups=[
+"Why do you think that?",
+"Can you give us an example?",
+"Has that always been true for you?",
+"Does anyone at the table have a different answer?",
+"What happened next?",
+"Would you make the same choice today?",
+"How does that compare with your country or culture?",
+"What makes you say that?"
+];
+let simpleUsed=[];
+function showConversationCard(i){
+  simpleUsed.push(i);
+  document.getElementById("simpleQuestion").textContent=simpleQuestions[i];
+  document.getElementById("simpleChallenge").style.display="block";
+  document.getElementById("simpleFollow").textContent="";
+  const cards=document.querySelectorAll("#simpleBoard .tile");
+  if(cards[i]){cards[i].disabled=true;cards[i].textContent="✓";cards[i].style.opacity=".38";}
+}
+function buildConversationBoard(){
+  const board=document.getElementById("simpleBoard");
+  board.innerHTML="";
+  simpleQuestions.forEach((q,i)=>{
+    const b=document.createElement("button");
+    b.className="tile";
+    b.textContent=i+1;
+    b.addEventListener("click",()=>showConversationCard(i));
+    board.appendChild(b);
+  });
+}
+function nextConversationCard(){
+  const remaining=simpleQuestions.map((_,i)=>i).filter(i=>!simpleUsed.includes(i));
+  if(!remaining.length){resetConversationCards();return;}
+  showConversationCard(pick(remaining));
+}
+function resetConversationCards(){
+  simpleUsed=[];
+  document.getElementById("simpleChallenge").style.display="none";
+  document.getElementById("simpleFollow").textContent="";
+  buildConversationBoard();
+}
+buildConversationBoard();
+
 </script></body></html>
