@@ -1,0 +1,48 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>The Conversation Table</title><style>
+:root{--ink:#2d241f;--cream:#f6efe4;--paper:#fffaf2;--coffee:#76513a;--green:#52634d;--gold:#c9974d;--line:#ded1bf;--muted:#756b63}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--cream);color:var(--ink);line-height:1.5}
+a{color:inherit}.wrap{max-width:1120px;margin:auto;padding:0 18px}
+.top{background:var(--paper);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.top .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-top:12px;padding-bottom:12px}
+.brand{font-family:Georgia,serif;font-weight:800;color:var(--coffee);text-decoration:none;font-size:1.2rem}
+.nav{display:flex;gap:14px;flex-wrap:wrap}.nav a{text-decoration:none;font-size:.88rem;font-weight:800}
+.hero{padding:72px 0;background:radial-gradient(circle at 15% 20%,rgba(201,151,77,.16),transparent 25%),var(--paper)}
+.kicker,.tag{text-transform:uppercase;letter-spacing:.13em;font-size:.75rem;font-weight:900;color:var(--green)}
+h1,h2{font-family:Georgia,serif;color:var(--coffee);line-height:1}h1{font-size:clamp(3rem,8vw,6.2rem);margin:.12em 0}h2{font-size:clamp(2rem,5vw,3.6rem);margin:0 0 10px}
+.lead{color:var(--muted);max-width:760px;font-size:1.04rem}
+main{padding:30px 0 70px}section{padding:46px 0;border-bottom:1px solid var(--line)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:22px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:23px}
+.card h3{margin-top:0;color:var(--green)}.prompt{font-family:Georgia,serif;font-size:1.4rem;line-height:1.28}
+.btn,.pill{border:0;border-radius:999px;padding:12px 17px;font-weight:850;cursor:pointer;text-decoration:none;display:inline-block;background:var(--coffee);color:white}
+.btn.alt{background:var(--green)}.btn.light,.pill{background:#eee2d1;color:var(--ink)}
+.controls{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}
+.stage{background:var(--green);color:white;border-radius:28px;padding:32px;margin-top:22px}.stage .tag{color:#f0cb8a}.stage .prompt{font-size:clamp(1.6rem,4vw,2.7rem)}
+.news{background:var(--coffee);color:white;border-radius:28px;padding:30px}.news h2{color:white}.news .lead{color:#eee1d7}
+.library-card{display:flex;flex-direction:column;min-height:290px}.library-card .emoji{font-size:3rem}.library-card .btn{margin-top:auto;align-self:flex-start}
+.path{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.path span{background:#eee2d1;border-radius:999px;padding:8px 12px;font-size:.82rem;font-weight:800}
+.board{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:18px}.tile{min-height:76px;border:1px solid var(--line);background:var(--paper);border-radius:16px;font-size:1.1rem;font-weight:900;cursor:pointer}
+.help{display:none;background:#fff3d8;border-left:5px solid var(--gold);padding:17px;border-radius:12px;margin-top:14px}
+.score{display:flex;gap:20px;flex-wrap:wrap;font-weight:900}.muted{color:var(--muted)}footer{text-align:center;padding:35px;color:var(--muted)}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.board{grid-template-columns:repeat(4,1fr)}.top .wrap{align-items:flex-start;flex-direction:column}.hero{padding:48px 0}}
+</style></head>
+<body><div class="top"><div class="wrap"><a class="brand" href="index.html">☕ The Conversation Table</a><div class="nav"><a href="#news">Today's News</a><a href="#today">Today's Gathering</a><a href="#library">Our Gatherings</a></div></div></div>
+<header class="hero"><div class="wrap"><div class="kicker">Conversation Club · B1+–B2</div><h1>Come to the table.</h1><p class="lead">Come for the English. Stay for the conversation. Every gathering starts with something happening in the world — and can end somewhere we didn't expect.</p><div class="path"><span>📰 WHAT'S HAPPENING?</span><span>🌱 TODAY'S GATHERING</span><span>💬 TALK</span><span>🎮 PLAY</span><span>🌙 ONE LAST QUESTION</span></div></div></header>
+<main class="wrap">
+<section id="news"><div class="news"><div class="tag">Our opening ritual</div><h2>What's happening today?</h2><p class="lead">Choose one current story that genuinely makes you want to say something. The news starts the conversation; it doesn't have to become the whole conversation.</p><div class="controls"><a class="btn light" href="https://engoo.com/app/daily-news" target="_blank" rel="noopener">Open Engoo Daily News ↗</a><button class="btn light" onclick="toggle('newsTalk')">We've chosen → Let's talk</button></div><div class="help" id="newsTalk"><b>Before reading:</b> What do you think this story is about?<br><br><b>After reading:</b> What surprised you? · What's your take? · How does it connect with your country, work or life?<br><br><b>Keep it going:</b> Ask somebody else at the table what they think.</div></div></section>
+
+<section id="today"><div class="tag">Today's gathering · 02</div><h2>🌱 Life Lately</h2><p class="lead">What's new, what's changing, and what's been on your mind? A conversation about where we are now — without turning it into a formal introduction.</p>
+<div class="card library-card"><div class="emoji">🌱</div><h3>LIFE LATELY</h3><p>Recent changes · work & life · decisions · priorities · things we're learning · stories · dilemmas · game time.</p><a class="btn" href="life-lately.html">Join today's gathering →</a></div></section>
+
+<section id="library"><div class="tag">The conversations we've shared</div><h2>Our Gatherings</h2><p class="lead">Each gathering stays here. We can revisit a question, replay a game or pick up a conversation we never quite finished.</p>
+<div class="grid">
+<div class="card library-card"><div class="emoji">✈️</div><div class="tag">Gathering 01</div><h3>Travel Stories</h3><p>What kind of traveller are you? Travel personalities, memorable journeys, unexpected moments and stories from the road.</p><a class="btn alt" href="travel.html">Revisit this gathering →</a></div>
+<div class="card library-card"><div class="emoji">🌱</div><div class="tag">Gathering 02 · Today</div><h3>Life Lately</h3><p>What's changing, what's taking up our time, what we're looking forward to and what matters now.</p><a class="btn alt" href="life-lately.html">Enter the gathering →</a></div>
+<div class="card library-card" style="opacity:.68"><div class="emoji">＋</div><div class="tag">Next time</div><h3>Another seat at the table</h3><p>A new topic will join the collection at our next gathering.</p></div>
+</div></section></main>
+<footer>Speak · Listen · Follow up · Come back to the table ☕</footer><script>
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+function toggle(id){const e=document.getElementById(id);e.style.display=e.style.display==='block'?'none':'block'}
+function setText(id,arr){document.getElementById(id).textContent=pick(arr)}
+</script></body></html>
